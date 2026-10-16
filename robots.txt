@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://binyamin115511.github.io/pituarim/sitemap.xml
