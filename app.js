@@ -95,3 +95,14 @@
   if(y<1){$('h_total').textContent='פחות משנה';$('h_free').textContent='—';$('h_tax').textContent='—';return;}
   const t=s*y; $('h_total').textContent=fmt(t); $('h_free').textContent=fmt(Math.min(t,13750*y)); $('h_tax').textContent=fmt(Math.max(0,t-13750*y));};
  ['h_salary','h_years'].forEach(id=>$(id).addEventListener('input',run)); run();})();
+(function(){const $=id=>document.getElementById(id); if(!$('g_salary')) return;
+ const fmt=n=>isFinite(n)?Math.round(n).toLocaleString('he-IL')+' ₪':'—';
+ const recDays=y=>y<=1?5:y<=3?6:y<=10?7:y<=15?8:y<=19?9:10;
+ const run=()=>{const s=+$('g_salary').value||0,m=Math.max(0,+$('g_months').value||0),vac=+$('g_vac').value||0,d=+$('g_days').value||5,got=+$('g_recv').value||0,payN=$('g_notice').value==='1';
+  const vacV=s/(d===6?25:21.67)*vac;
+  let rec=0; if(m>=12){const rem=m%12, yr=Math.floor(m/12)+(rem?1:0); const days=rem?recDays(yr)*rem/12:recDays(yr); rec=Math.max(0,days-got)*451.5;}
+  let nd=m<=6?m:(m<12?6+2.5*(m-6):30); const notV=payN?(m>=12?s:s/30*nd):0;
+  $('g_vac_out').textContent=fmt(vacV); $('g_rec_out').textContent=m>=12?fmt(rec):'אין (פחות משנה)';
+  $('g_not_out').textContent=payN?fmt(notV)+' ('+(m>=12?'חודש':Math.round(nd*10)/10+' ימים')+')':'לא רלוונטי';
+  $('g_total').textContent=fmt(vacV+rec+notV);};
+ ['g_salary','g_months','g_vac','g_days','g_recv','g_notice'].forEach(id=>{$(id).addEventListener('input',run);$(id).addEventListener('change',run)}); run();})();
